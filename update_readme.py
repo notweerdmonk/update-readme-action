@@ -42,3 +42,4 @@ def update_readme():
 
 # Execute update README function
 update_readme()
+return 1
