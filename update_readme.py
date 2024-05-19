@@ -1,4 +1,5 @@
 import os
+import sys
 from github import Github
 
 # Initialize GitHub API
@@ -42,4 +43,4 @@ def update_readme():
 
 # Execute update README function
 update_readme()
-return 1
+sys.exit(1)
