@@ -3,6 +3,4 @@ name: 'Update README'
 description: 'Updates README.md with latest repositories.'
 
 runs:
-  using: 'python'
-  main: 'update_readme.py'
-
+  using: "composite"
