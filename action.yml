@@ -15,7 +15,7 @@ runs:
 
     - name: Run update script
       shell: python
-      run: update_readme.py
+      run: python update_readme.py
       env:
         GITHUB_TOKEN: ${{ inputs.INPUT_TOKEN }}
 
