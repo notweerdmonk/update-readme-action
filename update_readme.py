@@ -43,4 +43,3 @@ def update_readme():
 
 # Execute update README function
 update_readme()
-sys.exit(1)
