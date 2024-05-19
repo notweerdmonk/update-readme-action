@@ -2,6 +2,10 @@ name: 'Update README'
 
 description: 'Updates README.md with latest repositories.'
 
+inputs:
+  token:
+    required: true
+    description: "Github token"
 runs:
   using: "composite"
   steps:
@@ -21,5 +25,5 @@ runs:
       shell: python
       run: python update_readme.py
       env:
-        GITHUB_TOKEN: ${{ secrets.UPDATE_README_GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.INPUT_TOKEN }}
 
