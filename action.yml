@@ -23,4 +23,4 @@ runs:
 
     - name: Run update script
       shell: python
-      run: python update_readme.py
+      run: python ${{ github.actions_path }}/update_readme.py
