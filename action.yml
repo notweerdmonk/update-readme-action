@@ -21,10 +21,6 @@ runs:
       shell: bash
       run: pip install PyGithub
 
-    - name: Test
-      shell: bash
-      run: ls -l
-
     - name: Run update script
       shell: bash
-      run: python update_readme.py
+      run: python ${{ github.action_path }}/update_readme.py
