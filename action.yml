@@ -6,6 +6,7 @@ runs:
   using: "composite"
   steps:
     - name: Run update script
+      shell: python
       run: python update_readme.py
       env:
         GITHUB_TOKEN: ${{ secrets.UPDATE_README_GITHUB_TOKEN }}
