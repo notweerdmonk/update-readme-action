@@ -12,13 +12,13 @@ async function getRecentRepos(username, token) {
   return repos.data.slice(0, 4);
 }
 
-async function updateReadme(repo, content, token) {
+async function updateReadme(owner, repo, content, token) {
   const octokit = new Octokit({ auth: token });
 
   try {
     const { data: readme } = await octokit.repos.getContent({
-      owner: repo.owner.login,
-      repo: repo.name,
+      owner: owner,
+      repo: repo,
       path: 'README.md'
     });
 
@@ -41,8 +41,8 @@ async function updateReadme(repo, content, token) {
     const sha = readme.sha;
 
     await octokit.repos.createOrUpdateFileContents({
-      owner: repo.owner.login,
-      repo: repo.name,
+      owner: owner,
+      repo: repo,
       path: 'README.md',
       message: 'Update README.md with featured repositories',
       content: Buffer.from(newContent).toString('base64'),
@@ -62,6 +62,8 @@ async function main() {
     const username = core.getInput('username');
     const token = core.getInput('github_token');
 
+    const { owner, repo } = github.context.repo;
+
     const repos = await getRecentRepos(username, token);
 
     let featuredReposContent = '';
@@ -69,9 +71,7 @@ async function main() {
       featuredReposContent += `### [${repo.name}](${repo.html_url})\n\n${repo.description || 'No description'}\n\nUpdated at ${repo.updated_at}\n\n`;
     }
 
-    for (const repo of repos) {
-      await updateReadme(repo, featuredReposContent, token);
-    }
+    await updateReadme(owner, repo, featuredReposContent, token);
   } catch (error) {
     core.setFailed(error.message);
   }
