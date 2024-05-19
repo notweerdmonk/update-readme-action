@@ -10,8 +10,17 @@ inputs:
     description: 'GitHub Username'
     required: true
 runs:
-  using: 'node20'
-  main: 'dist/index.js'
-branding:
-  icon: 'book'
-  color: 'blue'
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      shell: bash
+      run: pip install PyGithub
+
+    - name: Run update script
+      shell: python
+      run: python update_readme.py
