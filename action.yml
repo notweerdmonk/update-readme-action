@@ -5,6 +5,18 @@ description: 'Updates README.md with latest repositories.'
 runs:
   using: "composite"
   steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      shell: bash
+      run: pip install PyGithub
+
     - name: Run update script
       shell: python
       run: python update_readme.py
