@@ -26,7 +26,7 @@ def update_readme():
         repo_list += f"- [{repo.name}]({repo.html_url})\n  - Description: {repo.description or 'No description provided.'}\n"
 
     # Read existing README.md
-    repo = g.get_repo(os.getenv('GITHUB_REPOSITORY'))
+    repo = user.get_repo(os.getenv('GITHUB_REPOSITORY'))
     file = repo.get_contents("README.md")
 
     readme_content = file.decoded_content.decode("utf-8")
