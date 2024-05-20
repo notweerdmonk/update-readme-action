@@ -37,18 +37,19 @@ def update_readme():
 
     # Update repository list under "Featured Repositories" section
     if start_index != -1 and end_index != -1:
-        #new_readme_content = readme_content[:start_index + len(start_marker)] + "\n" + repo_list + "\n" + readme_content[end_index:]
-        new_readme_content = start_marker + "\n" + repo_list + "\n" + readme_content[end_index:]
+        new_readme_content = readme_content[:start_index + len(start_marker)] + "\n" + repo_list + "\n" + readme_content[end_index:]
+        #new_readme_content = start_marker + "\n" + repo_list + "\n" + readme_content[end_index:]
     else:
         # If "Featured Repositories" section is not found, update entire README content
-        new_readme_content = f"{start_marker}\n### Featured Repositories\n{repo_list}\n{end_marker}"
+        new_readme_content = f"{readme_content}\n{start_marker}\n### Featured Repositories\n{repo_list}\n{end_marker}"
+        #new_readme_content = f"{start_marker}\n### Featured Repositories\n{repo_list}\n{end_marker}"
 
     # Update README.md
     with open('README.md', 'w') as readme_file:
-        if start_index != -1:
-            readme_file.seek(start_index, 0)
-        else:
-            readme_file.seek(0, 2)
+        #if start_index != -1:
+        #    readme_file.seek(start_index, 0)
+        #else:
+        #    readme_file.seek(0, 2)
         readme_file.write(new_readme_content)
 
 # Execute update README function
