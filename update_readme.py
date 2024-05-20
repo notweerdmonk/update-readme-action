@@ -42,7 +42,7 @@ def update_readme():
     else:
         # If "Featured Repositories" section is not found, update entire README content
         #new_readme_content = f"{readme_content}\n{start_marker}\n### Featured Repositories\n{repo_list}\n{end_marker}"
-        #new_readme_content = f"{start_marker}\n### Featured Repositories\n{repo_list}\n{end_marker}"
+        new_readme_content = f"{start_marker}\n### Featured Repositories\n{repo_list}\n{end_marker}"
 
     print(new_readme_content)
     # Update README.md
