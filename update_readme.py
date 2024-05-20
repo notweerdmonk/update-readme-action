@@ -7,18 +7,24 @@ It is advisable to keep the repos section towards the end of the document.
 """
 
 # Initialize GitHub API
-github_token = os.getenv('GITHUB_TOKEN')
-g = Github(github_token)
+GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
+if not github_token:
+    print("Could not find Github token")
+    sys.exit(1)
+
+NRECENT = os.getenv("NUM_RECENT", 4)
+
+g = Github(GITHUB_TOKEN)
 
 # Update README function
-def update_readme():
+def update_readme(nrecent = 4):
     # Check if README.md exists in the repository
     if 'README.md' not in os.listdir():
         print("README.md not found. Skipping update.")
-        return
+        sys.exit(0)
 
     user = g.get_user()  # Get authenticated user
-    repos = user.get_repos(sort="updated", direction="desc")[:4]  # Get latest 4 repositories
+    repos = user.get_repos(sort="updated", direction="desc")[:nrecent]  # Get latest 4 repositories
 
     # Generate repository list
     repo_list = ""
@@ -50,4 +56,4 @@ def update_readme():
     repo.update_file(file.path, commit_msg, new_readme_content, file.sha)
 
 # Execute update README function
-update_readme()
+update_readme(NRECENT)
