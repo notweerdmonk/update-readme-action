@@ -26,8 +26,10 @@ def update_readme():
         repo_list += f"- [{repo.name}]({repo.html_url})\n  - Description: {repo.description or 'No description provided.'}\n"
 
     # Read existing README.md
-    with open('README.md', 'r') as readme_file:
-        readme_content = readme_file.read()
+    repo = g.get_repo(os.getenv('GITHUB_REPOSITORY'))
+    file = repo.get_contents("README.md")
+
+    readme_content = file.decoded_content.decode("utf-8")
 
     # Find index of "Featured Repositories" section
     start_marker = "<!-- Featured Repositories Start -->"
@@ -37,24 +39,15 @@ def update_readme():
 
     # Update repository list under "Featured Repositories" section
     if start_index != -1 and end_index != -1:
-        #new_readme_content = readme_content[:start_index + len(start_marker)] + "\n" + repo_list + "\n" + readme_content[end_index:]
-        new_readme_content = start_marker + "\n" + repo_list + "\n" + readme_content[end_index:]
+        new_readme_content = readme_content[:start_index + len(start_marker)] + "\n" + repo_list + "\n" + readme_content[end_index:]
     else:
         # If "Featured Repositories" section is not found, update entire README content
-        #new_readme_content = f"{readme_content}\n{start_marker}\n### Featured Repositories\n{repo_list}\n{end_marker}"
-        new_readme_content = f"{start_marker}\n### Featured Repositories\n{repo_list}\n{end_marker}"
+        new_readme_content = f"{readme_content}\n{start_marker}\n### Featured Repositories\n{repo_list}\n{end_marker}"
 
-    print(new_readme_content)
     # Update README.md
-    with open('README.md', 'w') as readme_file:
-        if start_index != -1:
-            readme_file.seek(start_index, 0)
-        else:
-            readme_file.seek(0, 2)
-        readme_file.write(new_readme_content)
+    commit_msg = "Update README.md with featured repositories"
 
-    with open('README.md', 'r') as readme_file:
-        print(readme_file.read())
+    repo.update_file(file.path, commit_msg, new_readme_content, file.sha)
 
 # Execute update README function
 update_readme()
