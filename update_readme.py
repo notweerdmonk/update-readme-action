@@ -8,7 +8,7 @@ It is advisable to keep the repos section towards the end of the document.
 
 # Initialize GitHub API
 GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
-if not github_token:
+if not GITHUB_TOKEN:
     print("Could not find Github token")
     sys.exit(1)
 
