@@ -12,12 +12,12 @@ if not GITHUB_TOKEN:
     print("Could not find Github token")
     sys.exit(1)
 
-NRECENT = os.getenv("NUM_RECENT", 4)
+NRECENT = int(os.getenv("NUM_RECENT", 4))
 
 g = Github(GITHUB_TOKEN)
 
 # Update README function
-def update_readme(nrecent = 4):
+def update_readme(nrecent: int = 4):
     # Check if README.md exists in the repository
     if 'README.md' not in os.listdir():
         print("README.md not found. Skipping update.")
