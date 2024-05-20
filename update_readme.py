@@ -44,6 +44,7 @@ def update_readme():
         new_readme_content = f"{readme_content}\n{start_marker}\n### Featured Repositories\n{repo_list}\n{end_marker}"
         ##new_readme_content = f"{start_marker}\n### Featured Repositories\n{repo_list}\n{end_marker}"
 
+    print(new_readme_content)
     # Update README.md
     with open('README.md', 'w') as readme_file:
         #if start_index != -1:
@@ -51,6 +52,9 @@ def update_readme():
         #else:
         #    readme_file.seek(0, 2)
         readme_file.write(new_readme_content)
+
+    with open('README.md', 'r') as readme_file:
+        print(readme_file.read())
 
 # Execute update README function
 update_readme()
