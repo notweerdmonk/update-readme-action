@@ -87,9 +87,10 @@ class ReadmeUpdater(object):
         else:
             # If "Featured Repositories" section is not found,
             # update entire README content
-            new_readme_content = \
-                    f"{readme_content}\n{start_marker}\n"\
+            new_readme_content = (
+                    f"{readme_content}\n{start_marker}\n"
                     f"### Featured Repositories\n{repo_list}\n{end_marker}"
+                )
 
         return new_readme_content
 
@@ -111,10 +112,11 @@ class ReadmeUpdater(object):
             if repo_count >= self.nrecent:
                 continue
 
-            repo_list += \
-                    f"- [{repo.name}]({repo.html_url})\n"\
-                    f"- Description: "\
+            repo_list += (
+                    f"- [{repo.name}]({repo.html_url})\n"
+                    f"- Description: "
                     f"{repo.description or 'No description provided.'}\n"
+                )
 
             repo_count += 1
 
