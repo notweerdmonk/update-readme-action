@@ -34,7 +34,7 @@ def update_readme(nrecent: int = 4):
     for repo in repos:
         if repo.name == this_repo_name:
             continue
-        if repo.name == "updated-readme-action":
+        if repo.name == "update-readme-action":
             continue
         if repo_count >= nrecent:
             continue
