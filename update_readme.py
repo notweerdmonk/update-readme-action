@@ -33,7 +33,7 @@ class ReadmeUpdater(object):
             return github.get_user(login=username)
         return github.get_user()
 
-    def __init__(self, username = None, gh_token = None, repo_path = None, nrecent = 5):
+    def __init__(self, username = None, gh_token = None, repo_path = None, nrecent = 0):
         self.config = ReadmeUpdater.get_config()
 
         if gh_token is not None and len(gh_token) > 0:
