@@ -23,7 +23,7 @@ def update_readme(nrecent: int = 4):
     # Check if README.md exists in the repository
     if 'README.md' not in os.listdir():
         print("README.md not found. Skipping update.")
-        sys.exit(0)
+        #sys.exit(0)
 
     user = g.get_user()  # Get authenticated user
     repos = user.get_repos(type="public", sort="updated", direction="desc")[:nrecent]  # Get latest 4 repositories
@@ -31,7 +31,8 @@ def update_readme(nrecent: int = 4):
     # Generate repository list
     repo_list = ""
     for repo in repos:
-        if repo.name != this_repo_name:
+        if repo.name != this_repo_name and repo.name != "update-readme-action":
+            print(repo.name)
             repo_list += f"- [{repo.name}]({repo.html_url})\n  - Description: {repo.description or 'No description provided.'}\n"
 
     # Read existing README.md
