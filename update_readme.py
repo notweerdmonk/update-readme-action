@@ -18,22 +18,24 @@ g = Github(GITHUB_TOKEN)
 
 # Update README function
 def update_readme(nrecent: int = 4):
+    this_repo = os.getenv('GITHUB_REPOSITORY')
+
     # Check if README.md exists in the repository
     if 'README.md' not in os.listdir():
         print("README.md not found. Skipping update.")
         sys.exit(0)
 
     user = g.get_user()  # Get authenticated user
-    repos = user.get_repos(sort="updated", direction="desc")[:nrecent]  # Get latest 4 repositories
+    repos = user.get_repos(type="public", sort="updated", direction="desc")[:nrecent]  # Get latest 4 repositories
 
     # Generate repository list
     repo_list = ""
     for repo in repos:
-        repo_list += f"- [{repo.name}]({repo.html_url})\n  - Description: {repo.description or 'No description provided.'}\n"
+        if repo.name != this_repo.name:
+            repo_list += f"- [{repo.name}]({repo.html_url})\n  - Description: {repo.description or 'No description provided.'}\n"
 
     # Read existing README.md
-    repo = g.get_repo(os.getenv('GITHUB_REPOSITORY'))
-    file = repo.get_contents("README.md")
+    file = this_repo.get_contents("README.md")
 
     readme_content = file.decoded_content.decode("utf-8")
 
@@ -53,7 +55,7 @@ def update_readme(nrecent: int = 4):
     # Update README.md
     commit_msg = "Update README.md with featured repositories"
 
-    repo.update_file(file.path, commit_msg, new_readme_content, file.sha)
+    this_repo.update_file(file.path, commit_msg, new_readme_content, file.sha)
 
 # Execute update README function
 update_readme(NRECENT)
