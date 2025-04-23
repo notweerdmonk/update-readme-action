@@ -16,7 +16,7 @@ class ReadmeUpdater(object):
     def get_config():
         return {
             "gh_token": os.getenv("GITHUB_TOKEN", None),
-            "nrecent": int(os.getenv("NUM_RECENT", 4))
+            "num_recent": int(os.getenv("NUM_RECENT", 4))
         }
 
     def get_repo(self, github):
@@ -33,7 +33,7 @@ class ReadmeUpdater(object):
             return github.get_user(login=username)
         return github.get_user()
 
-    def __init__(self, username = None, gh_token = None, repo_path = None, nrecent = 0):
+    def __init__(self, username = None, gh_token = None, repo_path = None, num_recent = 0):
         self.config = ReadmeUpdater.get_config()
 
         if gh_token is not None and len(gh_token) > 0:
@@ -60,10 +60,10 @@ class ReadmeUpdater(object):
 
         self.repo = self.user.get_repo(self.repo_name)
 
-        if nrecent > 0:
-            self.nrecent = nrecent
+        if num_recent > 0:
+            self.num_recent = num_recent
         else:
-            self.nrecent = self.config["NRECENT"]
+            self.num_recent = self.config["num_recent"]
 
     def make_readme(self, file, type="public", sort="updated", direction="desc"):
         if file is None:
@@ -111,7 +111,7 @@ class ReadmeUpdater(object):
             if name == "update-readme-action":
                 continue
 
-            if repo_count >= self.nrecent:
+            if repo_count >= self.num_recent:
                 continue
 
             repo_list += (
