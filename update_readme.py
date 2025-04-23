@@ -39,6 +39,7 @@ def update_readme(nrecent: int = 4):
         if repo_count >= nrecent:
             continue
         repo_list += f"- [{repo.name}]({repo.html_url})\n  - Description: {repo.description or 'No description provided.'}\n"
+        repo_count += 1
 
     # Read existing README.md
     this_repo = user.get_repo(this_repo_name)
