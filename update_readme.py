@@ -26,13 +26,19 @@ def update_readme(nrecent: int = 4):
         #sys.exit(0)
 
     user = g.get_user()  # Get authenticated user
-    repos = user.get_repos(type="public", sort="updated", direction="desc")[:nrecent]  # Get latest 4 repositories
+    repos = user.get_repos(type="public", sort="updated", direction="desc")
 
     # Generate repository list
     repo_list = ""
+    repo_count = 0
     for repo in repos:
-        if repo.name != this_repo_name and repo.name != "update-readme-action":
-            repo_list += f"- [{repo.name}]({repo.html_url})\n  - Description: {repo.description or 'No description provided.'}\n"
+        if repo.name == this_repo_name:
+            continue
+        if repo.name == "updated-readme-action":
+            continue
+        if repo_count >= nrecent:
+            continue
+        repo_list += f"- [{repo.name}]({repo.html_url})\n  - Description: {repo.description or 'No description provided.'}\n"
 
     # Read existing README.md
     this_repo = user.get_repo(this_repo_name)
