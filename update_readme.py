@@ -114,7 +114,7 @@ class ReadmeUpdater(object):
 
             repo_list += (
                     f"- [{repo.name}]({repo.html_url})\n"
-                    f"- Description: "
+                    f"  - Description: "
                     f"{repo.description or 'No description provided.'}\n"
                 )
 
