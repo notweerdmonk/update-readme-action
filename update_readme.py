@@ -18,7 +18,7 @@ g = Github(GITHUB_TOKEN)
 
 # Update README function
 def update_readme(nrecent: int = 4):
-    this_repo = os.getenv('GITHUB_REPOSITORY')
+    this_repo_name = os.getenv('GITHUB_REPOSITORY')
 
     # Check if README.md exists in the repository
     if 'README.md' not in os.listdir():
@@ -31,10 +31,11 @@ def update_readme(nrecent: int = 4):
     # Generate repository list
     repo_list = ""
     for repo in repos:
-        if repo.name != this_repo.name:
+        if repo.name != this_repo_name:
             repo_list += f"- [{repo.name}]({repo.html_url})\n  - Description: {repo.description or 'No description provided.'}\n"
 
     # Read existing README.md
+    this_repo = user.get_repo(this_repo_name)
     file = this_repo.get_contents("README.md")
 
     readme_content = file.decoded_content.decode("utf-8")
