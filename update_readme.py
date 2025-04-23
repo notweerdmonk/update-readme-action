@@ -35,7 +35,7 @@ def update_readme(nrecent: int = 4):
             repo_list += f"- [{repo.name}]({repo.html_url})\n  - Description: {repo.description or 'No description provided.'}\n"
 
     # Read existing README.md
-    this_repo = user.get_repo(this_repo_name)
+    this_repo = user.get_repo(os.path.basename(this_repo_name))
     file = this_repo.get_contents("README.md")
 
     readme_content = file.decoded_content.decode("utf-8")
