@@ -5,6 +5,7 @@ from github import Github
 It is advisable to keep the repos section towards the end of the document.
 """
 
+
 class ReadmeUpdater(object):
 
     @staticmethod
