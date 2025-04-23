@@ -8,7 +8,22 @@ inputs:
     required: true
   username:
     description: 'GitHub Username'
-    required: true
+    required: false
+  repo:
+    description: "Path of repository"
+    required: false
+  nrecent:
+    description: "Number of recent repositories to show"
+    required: false
+  type:
+    description: "Type of repository. Values: all, owner, member"
+    required: false
+  sort:
+    description: "Sorting type to use. Values: created, updated, pushed, full_name"
+    required: false
+  direction:
+    description: "Direction of sort. Values: asc, desc"
+    required: false
 runs:
   using: 'composite'
   steps:

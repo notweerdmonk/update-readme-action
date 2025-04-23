@@ -6,64 +6,140 @@ from github import Github
 It is advisable to keep the repos section towards the end of the document.
 """
 
-# Initialize GitHub API
-GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
-if not GITHUB_TOKEN:
-    print("Could not find Github token")
-    sys.exit(1)
+class ReadmeUpdater(object):
 
-NRECENT = int(os.getenv("NUM_RECENT", 4))
+    @staticmethod
+    def github(gh_token):
+        return Github(gh_token)
 
-g = Github(GITHUB_TOKEN)
+    @staticmethod
+    def get_config():
+        return {
+            "gh_token": os.getenv("GITHUB_TOKEN", None),
+            "nrecent": int(os.getenv("NUM_RECENT", 4))
+        }
 
-# Update README function
-def update_readme(nrecent: int = 4):
-    this_repo_name = os.path.basename(os.getenv('GITHUB_REPOSITORY'))
+    def get_repo(self, github):
+        repo_path = os.getenv("GITHUB_REPOSITORY")
+        return {
+            "repo_path": repo_path,
+            "repo_name": os.path.basename(repo_path),
+            }
 
-    # Check if README.md exists in the repository
-    if 'README.md' not in os.listdir():
-        print("README.md not found. Skipping update.")
-        #sys.exit(0)
+    @staticmethod
+    def get_user(github, username=None):
+        # Authenticated user
+        if username is not None and len(username) > 0:
+            return github.get_user(login=username)
+        return github.get_user()
 
-    user = g.get_user()  # Get authenticated user
-    repos = user.get_repos(type="public", sort="updated", direction="desc")
+    def __init__(self, username = None, gh_token = None, repo_path = None, nrecent = 5):
+        self.config = ReadmeUpdater.get_config()
 
-    # Generate repository list
-    repo_list = ""
-    repo_count = 0
-    for repo in repos:
-        if repo.name == this_repo_name:
-            continue
-        if repo.name == "update-readme-action":
-            continue
-        if repo_count >= nrecent:
-            continue
-        repo_list += f"- [{repo.name}]({repo.html_url})\n  - Description: {repo.description or 'No description provided.'}\n"
-        repo_count += 1
+        if gh_token is not None and len(gh_token) > 0:
+            self.gh_token = gh_token
+        else:
+            self.gh_token = self.config["gh_token"]
 
-    # Read existing README.md
-    this_repo = user.get_repo(this_repo_name)
-    file = this_repo.get_contents("README.md")
+        if self.gh_token is None or len(self.gh_token) == 0:
+            print("Could not find Github token")
+            sys.exit(1)
 
-    readme_content = file.decoded_content.decode("utf-8")
+        self.username = username
 
-    # Find index of "Featured Repositories" section
-    start_marker = "<!-- Featured Repositories Start -->"
-    end_marker = "<!-- Featured Repositories End -->"
-    start_index = readme_content.find(start_marker)
-    end_index = readme_content.find(end_marker)
+        self.github = ReadmeUpdater.github(self.gh_token)
+        self.user = ReadmeUpdater.get_user(self.github, self.username)
 
-    # Update repository list under "Featured Repositories" section
-    if start_index != -1 and end_index != -1:
-        new_readme_content = readme_content[:start_index + len(start_marker)] + "\n" + repo_list + "\n" + readme_content[end_index:]
-    else:
-        # If "Featured Repositories" section is not found, update entire README content
-        new_readme_content = f"{readme_content}\n{start_marker}\n### Featured Repositories\n{repo_list}\n{end_marker}"
+        if repo_path is not None and len(repo_path) > 0:
+            self.repo_path = repo_path
+            self.repo_name = os.path.basename(repo_path)
+        else:
+            repo = self.get_repo(self.github)
+            self.repo_path = repo["repo_path"]
+            self.repo_name = repo["repo_name"]
 
-    # Update README.md
-    commit_msg = "Update README.md with featured repositories"
+        self.repo = self.user.get_repo(self.repo_name)
 
-    this_repo.update_file(file.path, commit_msg, new_readme_content, file.sha)
+        if nrecent > 0:
+            self.nrecent = nrecent
+        else:
+            self.nrecent = self.config["NRECENT"]
 
-# Execute update README function
-update_readme(NRECENT)
+    def make_readme(self, file, repo_list):
+        if file is None:
+            return
+
+        readme_content = file.decoded_content.decode("utf-8")
+
+        start_marker = "<!-- Featured Repositories Start -->"
+        end_marker = "<!-- Featured Repositories End -->"
+        start_index = readme_content.find(start_marker)
+        end_index = readme_content.find(end_marker)
+
+        if start_index != -1 and end_index != -1:
+            new_readme_content = (
+                readme_content[: start_index + len(start_marker)]
+                + "\n"
+                + repo_list
+                + "\n"
+                + readme_content[end_index:]
+            )
+        else:
+            # If "Featured Repositories" section is not found,
+            # update entire README content
+            new_readme_content = \
+                    f"{readme_content}\n{start_marker}\n"\
+                    f"### Featured Repositories\n{repo_list}\n{end_marker}"
+
+        return new_readme_content
+
+    def get_repo_list(self, type, sort, direction):
+        repos = \
+            self.user.get_repos(type=type, sort=sort, direction=direction)
+
+        repo_list = ""
+        repo_count = 0
+        repo_name = self.repo_name
+
+        for repo in repos:
+            name = repo.name
+            if name == repo_name:
+                continue
+            if name == "update-readme-action":
+                continue
+
+            if repo_count >= self.nrecent:
+                continue
+
+            repo_list += \
+                    f"- [{repo.name}]({repo.html_url})\n"\
+                    f"- Description: "\
+                    f"{repo.description or 'No description provided.'}\n"
+
+            repo_count += 1
+
+        return repo_list
+
+    def run(self, type="public", sort="updated", direction="desc"):
+        repo_list = self.get_repo_list(type, sort, direction)
+
+        repo_dirlist = [file.path for file in self.repo.get_contents("/")]
+        if "README.md" not in repo_dirlist:
+            print("README.md not found. Skipping update.")
+            sys.exit(0)
+
+        readme = self.repo.get_contents("README.md")
+
+        new_readme_content = self.make_readme(readme, repo_list)
+
+        commit_msg = "Update README.md with featured repositories"
+
+        self.repo.update_file(
+                readme.path,
+                commit_msg,
+                new_readme_content,
+                readme.sha
+            )
+
+
+ReadmeUpdater(username="notweerdmonk").run()
