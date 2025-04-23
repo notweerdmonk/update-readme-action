@@ -65,7 +65,7 @@ class ReadmeUpdater(object):
         else:
             self.nrecent = self.config["NRECENT"]
 
-    def make_readme(self, type="public", sort="updated", direction="desc"):
+    def make_readme(file, self, type="public", sort="updated", direction="desc"):
         if file is None:
             return
 
