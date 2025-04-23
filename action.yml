@@ -10,13 +10,13 @@ inputs:
     description: 'GitHub Username'
     required: false
   repo:
-    description: "Path of repository"
+    description: "Path of repository which contains the readme."
     required: false
   nrecent:
     description: "Number of recent repositories to show"
     required: false
   type:
-    description: "Type of repository. Values: all, owner, member"
+    description: "Type of repositories to list in readme. Values: all, owner, member"
     required: false
   sort:
     description: "Sorting type to use. Values: created, updated, pushed, full_name"
