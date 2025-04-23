@@ -1,5 +1,4 @@
-import os
-import sys
+import os, sys
 from github import Github
 
 """
@@ -65,9 +64,11 @@ class ReadmeUpdater(object):
         else:
             self.nrecent = self.config["NRECENT"]
 
-    def make_readme(self, file, repo_list):
+    def make_readme(self, type="public", sort="updated", direction="desc"):
         if file is None:
             return
+
+        repo_list = self.get_repo_list(type, sort, direction)
 
         readme_content = file.decoded_content.decode("utf-8")
 
@@ -94,7 +95,7 @@ class ReadmeUpdater(object):
 
         return new_readme_content
 
-    def get_repo_list(self, type, sort, direction):
+    def get_repo_list(self, type="public", sort="updated", direction="desc"):
         repos = \
             self.user.get_repos(type=type, sort=sort, direction=direction)
 
@@ -122,26 +123,25 @@ class ReadmeUpdater(object):
 
         return repo_list
 
-    def run(self, type="public", sort="updated", direction="desc"):
-        repo_list = self.get_repo_list(type, sort, direction)
+    def __call__(self, type="public", sort="updated", direction="desc"):
+        dirlist = [file.path for file in self.repo.get_contents("/")]
 
-        repo_dirlist = [file.path for file in self.repo.get_contents("/")]
-        if "README.md" not in repo_dirlist:
+        if "README.md" not in dirlist:
             print("README.md not found. Skipping update.")
             sys.exit(0)
 
         readme = self.repo.get_contents("README.md")
 
-        new_readme_content = self.make_readme(readme, repo_list)
+        new_readme = self.make_readme(readme, type, sort, direction)
 
         commit_msg = "Update README.md with featured repositories"
 
         self.repo.update_file(
                 readme.path,
                 commit_msg,
-                new_readme_content,
+                new_readme,
                 readme.sha
             )
 
 
-ReadmeUpdater(username="notweerdmonk").run()
+ReadmeUpdater()()
