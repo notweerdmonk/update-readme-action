@@ -13,15 +13,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-
-      - name: Install dependencies
-        run: pip install PyGithub
-
-      - name: Update README
-        run: python update_readme.py
+      - name: Update reamde
+        uses: ./.github/actions/update-readme
         env:
           GITHUB_TOKEN: ${{ secrets.UPDATE_README_GITHUB_TOKEN != '' && secrets.UPDATE_README_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
+        with:
+          github_token: ${{ secrets.UPDATE_README_GITHUB_TOKEN != '' && secrets.UPDATE_README_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
