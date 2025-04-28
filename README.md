@@ -3,7 +3,6 @@
 ### Other Projects
 
 <!-- Featured Repositories Start -->
-### Featured Repositories
 - [notweerdmonk](https://github.com/notweerdmonk/notweerdmonk)
   - Description: Config files for my GitHub profile.
 - [notweerdmonk.github.io](https://github.com/notweerdmonk/notweerdmonk.github.io)
