@@ -40,7 +40,7 @@ runs:
 
     - name: Run update script
       shell: bash
-      run: python ${{ github.workspace }}/update_readme.py
+      run: python ${{ github.action_path }}/update_readme.py
       env:
         GITHUB_TOKEN: ${{ env.GITHUB_TOKEN != '' && env.GITHUB_TOKEN || inputs.github_token }}
         INPUT_GITHUB_TOKEN: ${{ env.GITHUB_TOKEN != '' && env.GITHUB_TOKEN || inputs.github_token }}
