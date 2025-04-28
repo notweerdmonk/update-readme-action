@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Update reamde
-        uses: notweerdmonk/update-readme-action-python/.github/actions/update-readme@main
+        uses: notweerdmonk/update-readme-action-python@main
         env:
           GITHUB_TOKEN: ${{ secrets.UPDATE_README_GITHUB_TOKEN != '' && secrets.UPDATE_README_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
         with:
