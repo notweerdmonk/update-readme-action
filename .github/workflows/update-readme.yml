@@ -12,9 +12,6 @@ jobs:
   update-readme:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
       - name: Update reamde
         uses: ./.github/actions/update-readme
         env:
